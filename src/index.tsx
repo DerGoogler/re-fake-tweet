@@ -1,6 +1,8 @@
 import App from "./App";
 import { CssBaseline, Box, ThemeProvider } from "@mui/material";
 import { render } from "react-dom";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
 
 // Styles
 import "./styles/default.scss";
@@ -13,14 +15,16 @@ document.body.appendChild(root);
 // Render the app component
 render(
   <>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box>
-        <main>
-          <App />
-        </main>
-      </Box>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterMoment}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box>
+          <main>
+            <App />
+          </main>
+        </Box>
+      </ThemeProvider>
+    </LocalizationProvider>
   </>,
   document.querySelector("app")
 );

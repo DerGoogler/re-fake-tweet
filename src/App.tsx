@@ -28,6 +28,9 @@ import domtoimage from "dom-to-image";
 import { saveAs } from "file-saver";
 import Tweet from "./components/tweet/Tweet";
 import { GitHub } from "@mui/icons-material";
+import MobileDatePicker from "@mui/lab/MobileDatePicker";
+import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
+import { DATE } from "./util/dateMaker";
 
 interface State {
   username: string;
@@ -38,7 +41,7 @@ interface State {
   display: string;
   text: string;
   image: string;
-  date: string;
+  date: string | undefined;
   app: string;
   retweets: number;
   quotedTweets: number;
@@ -67,7 +70,7 @@ class App extends Component<{}, State> {
       display: "default",
       text: "Ok, cool!",
       image: "",
-      date: "3:32 PM · Feb 14, 1997",
+      date: "Mon Jun 27 2022 20:17:28 GMT+0200",
       app: "Twitter for Android",
       retweets: 32000,
       quotedTweets: 100,
@@ -76,22 +79,8 @@ class App extends Component<{}, State> {
   }
 
   public render() {
-    const {
-      username,
-      name,
-      avatar,
-      verified,
-      locked,
-      display,
-      text,
-      image,
-      date,
-      app,
-      retweets,
-      quotedTweets,
-      likes,
-      isDrawerOpen,
-    } = this.state;
+    const { username, name, avatar, verified, locked, display, text, image, date, app, retweets, quotedTweets, likes } =
+      this.state;
     return (
       <>
         <Tweet
@@ -107,7 +96,7 @@ class App extends Component<{}, State> {
             display: display,
             text: text,
             image: image,
-            date: date,
+            date: date!,
             app: app,
             retweets: retweets,
             quotedTweets: quotedTweets,
@@ -118,7 +107,7 @@ class App extends Component<{}, State> {
           <Box sx={{ display: "flex", width: "100%" }}>
             <Box component="main" sx={{ p: 3, width: "100%" }}>
               <FormGroup>
-                <this.Input label="Nickname" value={username} state={"username"} />
+                <this.Input label="Username" value={username} state={"username"} />
                 <this.Input label="Name" value={name} state={"name"} />
                 <this.Input label="Avatar" value={avatar} state={"avatar"} />
               </FormGroup>
@@ -177,7 +166,6 @@ class App extends Component<{}, State> {
                     this.setState({ ["text"]: event.target.value });
                   }}
                 />
-                <this.Input label="Date" value={date} state={"date"} />
               </FormGroup>
 
               <FormGroup>
@@ -187,6 +175,16 @@ class App extends Component<{}, State> {
               </FormGroup>
 
               <FormGroup>
+                <div style={{ marginTop: "5px", marginBottom: "5px", width: "100%" }}>
+                  <MobileDateTimePicker
+                    label="Date"
+                    value={date}
+                    onChange={(newValue: Date | null) => {
+                      this.setState({ date: newValue?.toString() });
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </div>
                 <this.Input label="Quoted Tweets" value={String(quotedTweets)} state={"quotedTweets"} />
                 <this.Input label="Likes" value={String(likes)} state={"likes"} />
               </FormGroup>

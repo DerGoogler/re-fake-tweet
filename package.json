@@ -10,13 +10,19 @@
     "build-prod": "webpack --mode production"
   },
   "dependencies": {
+    "@date-io/moment": "^2.14.0",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/core": "^5.0.0-alpha.54",
     "@mui/icons-material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.88",
     "@mui/material": "^5.6.4",
     "dom-to-image": "^2.6.0",
     "fake-tweet": "^1.0.2",
     "file-saver": "^2.0.5",
+    "moment": "^2.29.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0"
   },

@@ -1,10 +1,11 @@
 import React from "react";
+import { DATE } from "../../util/dateMaker";
 import TweetConfig from "./../../typings/TweetConfig";
 
 function Metadata({ config }: { config: TweetConfig }) {
   return (
     <div className="metadata">
-      {config.date} · <span className="fake-link app">{config.app}</span>
+      {DATE(config.date!)} · <span className="fake-link app">{config.app}</span>
     </div>
   );
 }
