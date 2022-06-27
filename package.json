@@ -6,8 +6,8 @@
   "author": "Der_Googler",
   "license": "GPL-3.0",
   "scripts": {
-    "build-dev": "webpack --mode development",
-    "build-prod": "webpack --mode production"
+    "build-dev": "webpack --mode=development",
+    "build-prod": "webpack --mode=production"
   },
   "dependencies": {
     "@date-io/moment": "^2.14.0",
