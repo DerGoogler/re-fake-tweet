@@ -37,18 +37,4 @@ class Tweet extends React.Component<
   }
 }
 
-/*function Tweet({ config }: { config: TweetConfig }) {
-  const display = useDisplay(config.display);
-
-  return (
-    <div className={"tweet " + display}>
-      <UserInfo config={config} />
-      <Content config={config} />
-      <Metadata config={config} />
-      <Impact config={config} />
-      <Actions />
-    </div>
-  );
-}*/
-
 export default Tweet;
