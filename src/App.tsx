@@ -107,9 +107,9 @@ class App extends Component<{}, State> {
           <Box sx={{ display: "flex", width: "100%" }}>
             <Box component="main" sx={{ p: 3, width: "100%" }}>
               <FormGroup>
-                <this.Input label="Username" value={username} state={"username"} />
-                <this.Input label="Name" value={name} state={"name"} />
-                <this.Input label="Avatar" value={avatar} state={"avatar"} />
+                <this.Input title="Username" volumen={username} state={"username"} />
+                <this.Input title="Name" volumen={name} state={"name"} />
+                <this.Input title="Avatar" volumen={avatar} state={"avatar"} />
               </FormGroup>
 
               <FormGroup sx={{ margin: "8px" }}>
@@ -169,24 +169,30 @@ class App extends Component<{}, State> {
               </FormGroup>
 
               <FormGroup>
-                <this.Input label="Image" value={image} state={"image"} />
-                <this.Input label="App" value={app} state={"app"} />
-                <this.Input label="Re-Tweets" value={String(retweets)} state={"retweets"} />
+                <this.Input title="Image" volumen={image} state={"image"} />
+                <this.Input title="App" volumen={app} state={"app"} />
+                <this.Input title="Re-Tweets" volumen={String(retweets)} state={"retweets"} />
+              </FormGroup>
+
+              <FormGroup sx={{ marginTop: "8px", marginBottom: "4px" }}>
+                <MobileDateTimePicker
+                  label="Date"
+                  value={date}
+                  onChange={(newValue: Date | null) => {
+                    this.setState({ date: newValue?.toString() });
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
+                />
               </FormGroup>
 
               <FormGroup>
-                <div style={{ marginTop: "5px", marginBottom: "5px", width: "100%" }}>
-                  <MobileDateTimePicker
-                    label="Date"
-                    value={date}
-                    onChange={(newValue: Date | null) => {
-                      this.setState({ date: newValue?.toString() });
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </div>
-                <this.Input label="Quoted Tweets" value={String(quotedTweets)} state={"quotedTweets"} />
-                <this.Input label="Likes" value={String(likes)} state={"likes"} />
+                <this.Input title="Quoted Tweets" volumen={String(quotedTweets)} state={"quotedTweets"} />
+                <this.Input
+                  title="Likes"
+                  volumen={String(likes)}
+                  state={"likes"}
+                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                />
               </FormGroup>
             </Box>
           </Box>
@@ -223,15 +229,16 @@ class App extends Component<{}, State> {
     );
   }
 
-  public Input = (props: { label: string; value: string; state: string }) => {
-    const { label, value, state } = props;
+  public Input = (props: { title: string; volumen: string; state: string } & TextFieldProps) => {
+    const { title, volumen, state } = props;
     return (
       <TextField
         id="outlined-basic"
         fullWidth
         margin="dense"
-        label={label}
-        value={value}
+        label={title}
+        value={volumen}
+        {...props}
         variant="outlined"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           this.setState({ [state]: event.target.value });
