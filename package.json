@@ -1,5 +1,5 @@
 {
-  "name": "your-name-here",
+  "name": "re-fake-tweet",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.tsx",
@@ -10,20 +10,28 @@
     "build-prod": "webpack --mode production"
   },
   "dependencies": {
-    "onsenui": "^2.12.0",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.6.4",
+    "dom-to-image": "^2.6.0",
+    "fake-tweet": "^1.0.2",
+    "file-saver": "^2.0.5",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-onsenui": "^1.12.0"
+    "react-dom": "^18.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.7",
+    "@types/dom-to-image": "^2.6.4",
+    "@types/file-saver": "^2.0.5",
     "@types/node": "^17.0.38",
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
     "@types/react-onsenui": "^2.9.17",
+    "@types/react-twemoji": "^0.4.0",
     "@types/webpack": "^5.28.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.5",
