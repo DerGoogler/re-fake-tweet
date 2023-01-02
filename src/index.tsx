@@ -1,31 +1,53 @@
-import { createRoot } from "react-dom/client";
-import { CssBaseline, Box, ThemeProvider } from "@mui/material";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import App from "./App";
-import theme from "./theme";
+import * as React from "react";
+import { useLocalStorage } from "usehooks-ts";
+import { render } from "react-render-tools";
 
-// Styles
+import { CssBaseline, Box, ThemeProvider, createTheme } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+
+import App from "./App";
 import "./styles/default.scss";
 
-// Setup root node where our React app will be attached to
-const app = document.createElement("app");
-document.body.appendChild(app);
+export const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
-// Render the app component
-const container = document.querySelector("app");
-const root = createRoot(container!);
-root.render(
-  <>
-    <LocalizationProvider dateAdapter={AdapterMoment}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box>
-          <main>
-            <App />
-          </main>
-        </Box>
-      </ThemeProvider>
-    </LocalizationProvider>
-  </>
-);
+function Application() {
+  const [mode, setMode] = useLocalStorage<"light" | "dark">("theme", "light");
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+      },
+    }),
+    []
+  );
+
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: "#0076ff",
+          },
+          secondary: {
+            main: "#004ba0",
+          },
+        },
+      }),
+    [mode]
+  );
+
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <LocalizationProvider dateAdapter={AdapterMoment}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </LocalizationProvider>
+    </ColorModeContext.Provider>
+  );
+}
+
+render(<Application />, "re-tweet");

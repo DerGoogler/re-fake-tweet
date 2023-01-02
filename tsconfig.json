@@ -6,7 +6,7 @@
     "declaration": false,
     "strict": true,
     "noImplicitReturns": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "module": "es6",
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",

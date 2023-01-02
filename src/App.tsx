@@ -1,53 +1,31 @@
-import { Component } from "react";
-import {
-  TextField,
-  FormControlLabel,
-  FormGroup,
-  Switch,
-  Paper,
-  MenuItem,
-  TextFieldProps,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
+import * as React from "react";
 import { styled } from "@mui/material/styles";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import MoreIcon from "@mui/icons-material/MoreVert";
+import * as htmlToImage from "html-to-image";
+import * as FileSaver from "file-saver";
+import Tweet from "./components/tweet/Tweet";
+import { MobileDateTimePicker } from "@mui/x-date-pickers";
+
+import { useLocalStorage } from "usehooks-ts";
+
+import { TextFieldProps, useTheme } from "@mui/material";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Switch from "@mui/material/Switch";
+import Paper from "@mui/material/Paper";
+import MenuItem from "@mui/material/MenuItem";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
 import Fab from "@mui/material/Fab";
-import DownloadIcon from "@mui/icons-material/Download";
-import domtoimage from "dom-to-image";
-import { saveAs } from "file-saver";
-import Tweet from "./components/tweet/Tweet";
-import { GitHub } from "@mui/icons-material";
-import MobileDatePicker from "@mui/lab/MobileDatePicker";
-import MobileDateTimePicker from "@mui/lab/MobileDateTimePicker";
-import { DATE } from "./util/dateMaker";
+import IconButton from "@mui/material/IconButton";
 
-interface State {
-  username: string;
-  name: string;
-  avatar: string;
-  verified: boolean;
-  locked: boolean;
-  display: string;
-  text: string;
-  image: string;
-  date: string | undefined;
-  app: string;
-  retweets: number;
-  quotedTweets: number;
-  likes: number;
-  [x: string]: any;
-}
+import GitHub from "@mui/icons-material/GitHub";
+import DownloadIcon from "@mui/icons-material/Download";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import { ColorModeContext } from ".";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -58,194 +36,229 @@ const StyledFab = styled(Fab)({
   margin: "0 auto",
 });
 
-class App extends Component<{}, State> {
-  public constructor(props: {}) {
-    super(props);
-    this.state = {
-      username: "Der_Googler",
-      name: "ＪＩＭＭＹ デーモン",
-      avatar: "https://avatars.githubusercontent.com/u/54764558?v=4",
-      verified: true,
-      locked: false,
-      display: "default",
-      text: "Ok, cool!",
-      image: "",
-      date: "Mon Jun 27 2022 20:17:28 GMT+0200",
-      app: "Twitter for Android",
-      retweets: 32000,
-      quotedTweets: 100,
-      likes: 12700,
-    };
-  }
+const TweetContainer = styled("div")({
+  display: "block",
+  margin: "0 auto",
+  maxWidth: "600px",
+});
 
-  public render() {
-    const { username, name, avatar, verified, locked, display, text, image, date, app, retweets, quotedTweets, likes } =
-      this.state;
-    return (
-      <>
-        <Tweet
-          id="tweet"
-          config={{
-            user: {
-              nickname: username,
-              name: name,
-              avatar: avatar,
-              verified: verified,
-              locked: locked,
-            },
-            display: display,
-            text: text,
-            image: image,
-            date: date!,
-            app: app,
-            retweets: retweets,
-            quotedTweets: quotedTweets,
-            likes: likes,
-          }}
-        />
-        <Paper square sx={{ pb: "50px" }}>
-          <Box sx={{ display: "flex", width: "100%" }}>
-            <Box component="main" sx={{ p: 3, width: "100%" }}>
-              <FormGroup>
-                <this.Input title="Username" volumen={username} state={"username"} />
-                <this.Input title="Name" volumen={name} state={"name"} />
-                <this.Input title="Avatar" volumen={avatar} state={"avatar"} />
-              </FormGroup>
+const ContentContainer = styled(Box)({
+  padding: "24px 0px 24px",
+  width: "100%",
+  maxWidth: "600px",
+  margin: "auto",
+});
 
-              <FormGroup sx={{ margin: "8px" }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={verified}
-                      disabled={locked}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        this.setState({ verified: event.target.checked });
-                      }}
-                    />
-                  }
-                  label="Verified"
-                />
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={locked}
-                      disabled={verified}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                        this.setState({ locked: event.target.checked });
-                      }}
-                    />
-                  }
-                  label="Locked"
-                />
-              </FormGroup>
-              <FormGroup>
-                <TextField
-                  select
-                  label="Display"
-                  margin="dense"
-                  value={display}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    this.setState({ display: event.target.value });
-                  }}
-                >
-                  {["default", "dim", "lightsout"].map((option) => (
-                    <MenuItem key={option} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  id="outlined-multiline-static"
-                  label="Text"
-                  multiline
-                  margin="dense"
-                  rows={4}
-                  value={text}
-                  variant="outlined"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    this.setState({ ["text"]: event.target.value });
-                  }}
-                />
-              </FormGroup>
+function App() {
+  const theme = useTheme();
+  const colorMode = React.useContext(ColorModeContext);
 
-              <FormGroup>
-                <this.Input title="Image" volumen={image} state={"image"} />
-                <this.Input title="App" volumen={app} state={"app"} />
-                <this.Input title="Re-Tweets" volumen={String(retweets)} state={"retweets"} />
-              </FormGroup>
+  const [username, setUsername] = useLocalStorage<string>("username", "Der_Googler");
+  const [name, setName] = useLocalStorage<string>("name", "ＪＩＭＭＹ デーモン");
+  const [avatar, setAvatar] = useLocalStorage<string>("avatar", "https://avatars.githubusercontent.com/u/54764558?v=4");
+  const [verified, setVerified] = useLocalStorage<boolean>("verified", true);
+  const [locked, setLocked] = useLocalStorage<boolean>("locked", false);
+  const [display, setDisplay] = useLocalStorage<string>("display", "default");
+  const [text, setText] = useLocalStorage<string>("text", "Ok, cool!");
+  const [image, setImage] = useLocalStorage<string>("image", "");
+  const [date, setDate] = useLocalStorage<string | undefined>("date", "Mon Jun 27 2022 20:17:28 GMT+0200");
+  const [app, setApp] = useLocalStorage<string>("app", "Twitter for Android");
+  const [retweets, setRetweets] = useLocalStorage<number>("retweets", 32000);
+  const [quotedTweets, setQuotedTweets] = useLocalStorage<number>("quotedTweets", 100);
+  const [likes, setLikes] = useLocalStorage<number>("likes", 12700);
 
-              <FormGroup sx={{ marginTop: "8px", marginBottom: "4px" }}>
-                <MobileDateTimePicker
-                  label="Date"
-                  value={date}
-                  onChange={(newValue: Date | null) => {
-                    this.setState({ date: newValue?.toString() });
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </FormGroup>
+  const designs = [
+    {
+      label: "Default",
+      value: "default",
+    },
+    {
+      label: "Dim",
+      value: "dim",
+    },
+    {
+      label: "Lights out",
+      value: "lightsout",
+    },
+  ];
 
-              <FormGroup>
-                <this.Input title="Quoted Tweets" volumen={String(quotedTweets)} state={"quotedTweets"} />
-                <this.Input
-                  title="Likes"
-                  volumen={String(likes)}
-                  state={"likes"}
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-                />
-              </FormGroup>
-            </Box>
-          </Box>
+  return (
+    <>
+      <div style={{ padding: 8 }}>
+        <TweetContainer>
+          <Tweet
+            id="tweet"
+            config={{
+              user: {
+                nickname: username,
+                name: name,
+                avatar: avatar,
+                verified: verified,
+                locked: locked,
+              },
+              display: display,
+              text: text,
+              image: image,
+              date: date!,
+              app: app,
+              retweets: retweets,
+              quotedTweets: quotedTweets,
+              likes: likes,
+            }}
+          />
+        </TweetContainer>
+        <Paper elevation={0} square sx={{ pb: "50px" }}>
+          <ContentContainer component="main">
+            <FormGroup>
+              <Input title="Username" value={username} state={setUsername} />
+              <Input title="Name" value={name} state={setName} />
+              <Input title="Avatar" value={avatar} state={setAvatar} />
+            </FormGroup>
+
+            <FormGroup sx={{ margin: "8px" }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={verified}
+                    disabled={locked}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setVerified(event.target.checked);
+                    }}
+                  />
+                }
+                label="Verified"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={locked}
+                    disabled={verified}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setLocked(event.target.checked);
+                    }}
+                  />
+                }
+                label="Locked"
+              />
+            </FormGroup>
+            <FormGroup>
+              <TextField
+                select
+                label="Design"
+                margin="dense"
+                value={display}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setDisplay(event.target.value);
+                }}
+              >
+                {designs.map((design) => (
+                  <MenuItem key={design.value} value={design.value}>
+                    {design.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                id="outlined-multiline-static"
+                label="Text"
+                multiline
+                margin="dense"
+                rows={4}
+                value={text}
+                variant="outlined"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setText(event.target.value);
+                }}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Input title="Image" value={image} state={setImage} />
+              <Input title="App" value={app} state={setApp} />
+              <Input title="Re-Tweets" value={String(retweets).replace(/\D/g, "")} state={setRetweets} />
+            </FormGroup>
+
+            <FormGroup sx={{ marginTop: "8px", marginBottom: "4px" }}>
+              <MobileDateTimePicker
+                label="Date"
+                value={date}
+                onChange={(newValue: Date | null) => {
+                  setDate(newValue?.toString());
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Input title="Quoted Tweets" value={String(quotedTweets).replace(/\D/g, "")} state={setQuotedTweets} />
+              <Input
+                title="Likes"
+                value={String(likes).replace(/\D/g, "")}
+                state={setLikes}
+                inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+              />
+            </FormGroup>
+          </ContentContainer>
         </Paper>
+      </div>
 
-        <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
-          <Toolbar>
-            <StyledFab
-              color="secondary"
-              aria-label="add"
-              onClick={() => {
-                domtoimage.toBlob(document.getElementById("tweet")!).then(function (blob) {
-                  saveAs(blob, `${new Date()}.png`);
-                });
-              }}
-            >
-              <DownloadIcon />
-            </StyledFab>
-            <Box sx={{ flexGrow: 1 }} />
-            <IconButton
-              color="inherit"
-              onClick={() => {
-                window.open("https://github.com/DerGoogler/re-fake-tweet", "_blank");
-              }}
-            >
-              <GitHub />
-            </IconButton>
-            <IconButton color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-      </>
-    );
-  }
+      <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
+        <Toolbar>
+          <StyledFab
+            color="secondary"
+            aria-label="add"
+            onClick={() => {
+              htmlToImage.toPng(document.getElementById("tweet")!).then((blob) => {
+                const filename = `${name}_${username}_${Math.floor(Math.random() * likes)}.png`;
+                if (window.saveAs) {
+                  window.saveAs(blob, filename);
+                } else {
+                  FileSaver.saveAs(blob!, filename);
+                }
+              });
+            }}
+          >
+            <DownloadIcon />
+          </StyledFab>
+          <Box sx={{ flexGrow: 1 }} />
+          <IconButton
+            color="inherit"
+            onClick={() => {
+              window.open("https://github.com/DerGoogler/re-fake-tweet", "_blank");
+            }}
+          >
+            <GitHub />
+          </IconButton>
+          <IconButton onClick={colorMode.toggleColorMode} color="inherit">
+            {theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
+    </>
+  );
+}
 
-  public Input = (props: { title: string; volumen: string; state: string } & TextFieldProps) => {
-    const { title, volumen, state } = props;
-    return (
-      <TextField
-        id="outlined-basic"
-        fullWidth
-        margin="dense"
-        label={title}
-        value={volumen}
-        {...props}
-        variant="outlined"
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          this.setState({ [state]: event.target.value });
-        }}
-      />
-    );
-  };
+interface Input {
+  title: string;
+  value: string;
+  state: React.Dispatch<React.SetStateAction<any>>;
+}
+
+function Input(props: Input & TextFieldProps) {
+  const { title, value, state } = props;
+  return (
+    <TextField
+      id="outlined-basic"
+      fullWidth
+      margin="dense"
+      label={title}
+      value={value}
+      title={title}
+      variant="outlined"
+      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+        state(event.target.value);
+      }}
+    />
+  );
 }
 
 export default App;
