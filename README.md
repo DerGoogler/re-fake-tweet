@@ -16,5 +16,5 @@ This app is an old re-work of my losted Fake-Tweet source. This version/app is b
   - `Default`
   - `Dime`
   - `Lights out`
-- Date picker, to make it simple as possible to pick and date
+- Date picker, to make it simple as possible to pick an date
 - Ability to download you masterpiece
