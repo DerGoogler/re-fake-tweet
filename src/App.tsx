@@ -53,19 +53,19 @@ function App() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
-  const [username, setUsername] = useLocalStorage<string>("username", "Der_Googler");
-  const [name, setName] = useLocalStorage<string>("name", "ＪＩＭＭＹ デーモン");
-  const [avatar, setAvatar] = useLocalStorage<string>("avatar", "https://avatars.githubusercontent.com/u/54764558?v=4");
-  const [verified, setVerified] = useLocalStorage<boolean>("verified", true);
-  const [locked, setLocked] = useLocalStorage<boolean>("locked", false);
-  const [display, setDisplay] = useLocalStorage<string>("display", "default");
-  const [text, setText] = useLocalStorage<string>("text", "Ok, cool!");
-  const [image, setImage] = useLocalStorage<string>("image", "");
-  const [date, setDate] = useLocalStorage<string | undefined>("date", "Mon Jun 27 2022 20:17:28 GMT+0200");
-  const [app, setApp] = useLocalStorage<string>("app", "Twitter for Android");
-  const [retweets, setRetweets] = useLocalStorage<number>("retweets", 32000);
-  const [quotedTweets, setQuotedTweets] = useLocalStorage<number>("quotedTweets", 100);
-  const [likes, setLikes] = useLocalStorage<number>("likes", 12700);
+  const [ username,     setUsername     ] = useLocalStorage<string>             ( "username",     "Der_Googler"                                           );
+  const [ name,         setName         ] = useLocalStorage<string>             ( "name",         "ＪＩＭＭＹ デーモン"                                     );
+  const [ avatar,       setAvatar       ] = useLocalStorage<string>             ( "avatar",       "https://avatars.githubusercontent.com/u/54764558?v=4"  );
+  const [ verified,     setVerified     ] = useLocalStorage<boolean>            ( "verified",     true                                                    );
+  const [ locked,       setLocked       ] = useLocalStorage<boolean>            ( "locked",       false                                                   );
+  const [ display,      setDisplay      ] = useLocalStorage<string>             ( "display",      "default"                                               );
+  const [ text,         setText         ] = useLocalStorage<string>             ( "text",         "Ok, cool!"                                             );
+  const [ image,        setImage        ] = useLocalStorage<string>             ( "image",        ""                                                      );
+  const [ date,         setDate         ] = useLocalStorage<string | undefined> ( "date",         "Mon Jun 27 2022 20:17:28 GMT+0200"                     );
+  const [ app,          setApp          ] = useLocalStorage<string>             ( "app",          "Twitter for Android"                                   );
+  const [ retweets,     setRetweets     ] = useLocalStorage<number>             ( "retweets",     32000                                                   );
+  const [ quotedTweets, setQuotedTweets ] = useLocalStorage<number>             ( "quotedTweets", 100                                                     );
+  const [ likes,        setLikes        ] = useLocalStorage<number>             ( "likes",        12700                                                   );
 
   const designs = [
     {
