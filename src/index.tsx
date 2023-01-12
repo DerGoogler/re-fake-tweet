@@ -12,7 +12,7 @@ import "./styles/default.scss";
 export const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
 
 function Application() {
-  const [mode, setMode] = useLocalStorage<"light" | "dark">("theme", "light");
+  const [mode, setMode] = useLocalStorage<"light" | "dark">("theme", "dark");
   const colorMode = React.useMemo(
     () => ({
       toggleColorMode: () => {

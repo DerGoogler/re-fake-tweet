@@ -14,14 +14,21 @@ import FormGroup from "@mui/material/FormGroup";
 import Switch from "@mui/material/Switch";
 import Paper from "@mui/material/Paper";
 import MenuItem from "@mui/material/MenuItem";
-
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Fab from "@mui/material/Fab";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import InputAdornment from "@mui/material/InputAdornment";
 
 import GitHub from "@mui/icons-material/GitHub";
+import ClearIcon from "@mui/icons-material/Clear";
 import DownloadIcon from "@mui/icons-material/Download";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
@@ -53,19 +60,22 @@ function App() {
   const theme = useTheme();
   const colorMode = React.useContext(ColorModeContext);
 
-  const [ username,     setUsername     ] = useLocalStorage<string>             ( "username",     "Der_Googler"                                           );
-  const [ name,         setName         ] = useLocalStorage<string>             ( "name",         "ＪＩＭＭＹ デーモン"                                     );
-  const [ avatar,       setAvatar       ] = useLocalStorage<string>             ( "avatar",       "https://avatars.githubusercontent.com/u/54764558?v=4"  );
-  const [ verified,     setVerified     ] = useLocalStorage<boolean>            ( "verified",     true                                                    );
-  const [ locked,       setLocked       ] = useLocalStorage<boolean>            ( "locked",       false                                                   );
-  const [ display,      setDisplay      ] = useLocalStorage<string>             ( "display",      "default"                                               );
-  const [ text,         setText         ] = useLocalStorage<string>             ( "text",         "Ok, cool!"                                             );
-  const [ image,        setImage        ] = useLocalStorage<string>             ( "image",        ""                                                      );
-  const [ date,         setDate         ] = useLocalStorage<string | undefined> ( "date",         "Mon Jun 27 2022 20:17:28 GMT+0200"                     );
-  const [ app,          setApp          ] = useLocalStorage<string>             ( "app",          "Twitter for Android"                                   );
-  const [ retweets,     setRetweets     ] = useLocalStorage<number>             ( "retweets",     32000                                                   );
-  const [ quotedTweets, setQuotedTweets ] = useLocalStorage<number>             ( "quotedTweets", 100                                                     );
-  const [ likes,        setLikes        ] = useLocalStorage<number>             ( "likes",        12700                                                   );
+  const [username, setUsername] = useLocalStorage<string>("username", "Der_Googler");
+  const [name, setName] = useLocalStorage<string>("name", "ＪＩＭＭＹ デーモン");
+  const [avatar, setAvatar] = useLocalStorage<string>("avatar", "https://avatars.githubusercontent.com/u/54764558?v=4");
+  const [verified, setVerified] = useLocalStorage<boolean>("verified", true);
+  const [locked, setLocked] = useLocalStorage<boolean>("locked", false);
+  const [borderd, setBordered] = useLocalStorage<boolean>("bordered", true);
+  const [display, setDisplay] = useLocalStorage<string>("display", "dim");
+  const [text, setText] = useLocalStorage<string>("text", "Ok, cool!");
+  const [image, setImage] = useLocalStorage<string>("image", "");
+  const [date, setDate] = useLocalStorage<string | undefined>("date", "Mon Jun 27 2022 20:17:28 GMT+0200");
+  const [app, setApp] = useLocalStorage<string>("app", "Twitter for Android");
+  const [retweets, setRetweets] = useLocalStorage<number>("retweets", 32000);
+  const [quotedTweets, setQuotedTweets] = useLocalStorage<number>("quotedTweets", 100);
+  const [likes, setLikes] = useLocalStorage<number>("likes", 12700);
+
+  const [open, setOpen] = React.useState(false);
 
   const designs = [
     {
@@ -82,11 +92,20 @@ function App() {
     },
   ];
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <div style={{ padding: 8 }}>
         <TweetContainer>
           <Tweet
+            style={{ borderRadius: borderd ? 8 : 0 }}
             id="tweet"
             config={{
               user: {
@@ -115,7 +134,7 @@ function App() {
               <Input title="Avatar" value={avatar} state={setAvatar} />
             </FormGroup>
 
-            <FormGroup sx={{ margin: "8px" }}>
+            <FormGroup row sx={{ margin: "8px" }}>
               <FormControlLabel
                 control={
                   <Switch
@@ -141,6 +160,21 @@ function App() {
                 label="Locked"
               />
             </FormGroup>
+
+            <FormGroup sx={{ margin: "8px" }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={borderd}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setBordered(event.target.checked);
+                    }}
+                  />
+                }
+                label="Bodered"
+              />
+            </FormGroup>
+
             <FormGroup>
               <TextField
                 select
@@ -197,6 +231,9 @@ function App() {
                 inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
               />
             </FormGroup>
+            <Button style={{ marginTop: 8 }} onClick={handleClickOpen} variant="outlined" color="error" fullWidth>
+              CLEAR LOCAL STORAGE
+            </Button>
           </ContentContainer>
         </Paper>
       </div>
@@ -233,6 +270,28 @@ function App() {
           </IconButton>
         </Toolbar>
       </AppBar>
+
+      <Dialog open={open} onClose={handleClose} aria-labelledby="responsive-dialog-title">
+        <DialogTitle id="responsive-dialog-title">Clear localStorage</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure to clear all items from the local storage?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleClose}>
+            NO
+          </Button>
+          <Button
+            onClick={() => {
+              window.localStorage.clear();
+              handleClose();
+              window.location.reload();
+            }}
+            autoFocus
+          >
+            YES
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
@@ -256,6 +315,21 @@ function Input(props: Input & TextFieldProps) {
       variant="outlined"
       onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
         state(event.target.value);
+      }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={() => {
+                state("");
+              }}
+              edge="end"
+            >
+              <ClearIcon />
+            </IconButton>
+          </InputAdornment>
+        ),
       }}
     />
   );
