@@ -40,7 +40,8 @@ function Metadata({ config }: { config: TweetConfig }) {
 
   return (
     <div className="metadata">
-      {makeDate(config.date!)} · <span className="fake-link app">{config.app}</span>
+      {makeDate(config.date!)}
+      {config.app != "" || null ? " · " : ""} <span className="fake-link app">{config.app}</span>
     </div>
   );
 }

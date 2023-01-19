@@ -64,8 +64,10 @@ function App() {
   const [name, setName] = useLocalStorage<string>("name", "ＪＩＭＭＹ デーモン");
   const [avatar, setAvatar] = useLocalStorage<string>("avatar", "https://avatars.githubusercontent.com/u/54764558?v=4");
   const [verified, setVerified] = useLocalStorage<boolean>("verified", true);
+  const [verifiedStyle, setVerifiedStyle] = useLocalStorage<string>("verifiedStyle", "legacy");
   const [locked, setLocked] = useLocalStorage<boolean>("locked", false);
   const [borderd, setBordered] = useLocalStorage<boolean>("bordered", true);
+  const [affiliationMark, setAffiliationMark] = useLocalStorage<boolean>("affiliationMark", true);
   const [display, setDisplay] = useLocalStorage<string>("display", "dim");
   const [text, setText] = useLocalStorage<string>("text", "Ok, cool!");
   const [image, setImage] = useLocalStorage<string>("image", "");
@@ -92,6 +94,21 @@ function App() {
     },
   ];
 
+  const verifiedStyles = [
+    {
+      label: "Legacy",
+      value: "legacy",
+    },
+    {
+      label: "Business",
+      value: "business",
+    },
+    {
+      label: "Governments",
+      value: "government",
+    },
+  ];
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -112,7 +129,8 @@ function App() {
                 nickname: username,
                 name: name,
                 avatar: avatar,
-                verified: verified,
+                verified: { state: verified, style: verifiedStyle },
+                affiliate: affiliationMark,
                 locked: locked,
               },
               display: display,
@@ -151,7 +169,7 @@ function App() {
                 control={
                   <Switch
                     checked={locked}
-                    disabled={verified}
+                    disabled={affiliationMark || verified}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                       setLocked(event.target.checked);
                     }}
@@ -161,7 +179,7 @@ function App() {
               />
             </FormGroup>
 
-            <FormGroup sx={{ margin: "8px" }}>
+            <FormGroup row sx={{ margin: "8px" }}>
               <FormControlLabel
                 control={
                   <Switch
@@ -173,9 +191,37 @@ function App() {
                 }
                 label="Bodered"
               />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={affiliationMark}
+                    disabled={locked}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                      setAffiliationMark(event.target.checked);
+                    }}
+                  />
+                }
+                label="Affiliation Mark (Beta)"
+              />
             </FormGroup>
 
             <FormGroup>
+              <TextField
+                select
+                label="Verified Style"
+                margin="dense"
+                value={verifiedStyle}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setVerifiedStyle(event.target.value);
+                }}
+              >
+                {verifiedStyles.map((stl) => (
+                  <MenuItem key={stl.value} value={stl.value}>
+                    {stl.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+
               <TextField
                 select
                 label="Design"
